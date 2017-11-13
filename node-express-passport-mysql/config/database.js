@@ -6,6 +6,5 @@ module.exports = {
         'password': 'root'
     },
 	'database': 'airport',
-    'users_table': 'users',
-    'admins_table': 'admins',
+    'users_table': 'users'
 };

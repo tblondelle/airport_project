@@ -1,4 +1,4 @@
-<!-- views/adminstart.ejs -->
+<!-- views/profile.ejs -->
 <!doctype html>
 <html>
 <head>
@@ -13,7 +13,7 @@
 <div class="container">
 
 	<div class="page-header text-center">
-		<h1><span class="fa fa-anchor"></span> ADMIN - Profile Page</h1>
+		<h1><span class="fa fa-anchor"></span> Profile Page</h1>
 		<a href="/logout" class="btn btn-default btn-sm">Logout</a>
 	</div>
 
@@ -28,6 +28,8 @@
 						<strong>id</strong>: <%= user.id %><br>
 						<strong>username</strong>: <%= user.username %><br>
 						<strong>password</strong>: <%= user.password %><br>
+						<strong>role</strong>: <% if (user.is_admin == 0) { %>
+                            User <% } else { %> Admin <% } %>
 					</p>
 
 			</div>
