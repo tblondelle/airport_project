@@ -1,22 +1,28 @@
 // app/routes.js
-module.exports = function (app, passport) {
 
+
+
+module.exports = function (app, passport) {
+    var db_modif = require('../config/database_modif');
+    
+    
+    
+    
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function (req, res) {
-
+        data = {}
+        data.title = "Home";
         if (req.user) {
-            res.render('index.ejs', {
-                logged: true,
-                user: req.user // get the user out of session and pass to template
-            }); // load the index.ejs file
+            data.logged = true;
+            data.user = req.user; // get the user out of session and pass to template
         } else {
-            res.render('index.ejs', {
-                logged: false
-            }); // load the index.ejs file
+            data.logged = false;
         }
-
+        
+        //console.error(ejsLint('index.ejs', data));
+        res.render('index.ejs', data); // load the index.ejs file
     });
 
     // =====================================
@@ -25,9 +31,15 @@ module.exports = function (app, passport) {
     // show the login form
     app.get('/login', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('login.ejs', {
-            message: req.flash('loginMessage')
-        });
+        if (req.user) {
+            res.redirect('/');
+        } else {
+            res.render('login.ejs', {
+                logged: false,
+                message: req.flash('loginMessage'),
+                title: "Login"
+            });
+        }
     });
 
     // process the login form
@@ -51,9 +63,15 @@ module.exports = function (app, passport) {
     // show the signup form
     app.get('/signup', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', {
-            message: req.flash('signupMessage')
-        });
+        if (req.user) {
+            res.redirect('/');
+        } else {
+            res.render('signup.ejs', {
+                logged: false,
+                message: req.flash('signupMessage'),
+                title: "Signup"
+            });
+        }
     });
 
     // process the signup form
@@ -73,7 +91,9 @@ module.exports = function (app, passport) {
     // we will use route middleware to verify this (the isLoggedIn function)  
     app.get('/profile', isLoggedIn, function (req, res) {
         res.render('profile.ejs', {
-            user: req.user // get the user out of session and pass to template
+            logged: true,
+            user: req.user,
+            title: "Profile"
         });
     });
 
@@ -85,14 +105,66 @@ module.exports = function (app, passport) {
         req.logout();
         res.redirect('/');
     });
-};
 
-// route middleware to make sure
-function isLoggedIn(req, res, next) {
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
 
-    // if they aren't redirect them to the home page
-    res.redirect('/');
+    // =====================================
+    // DASHBOARD ===========================
+    // =====================================
+    app.get('/dashboard', isLoggedInAsAdmin, function (req, res) {
+
+        res.render('dashboard.ejs', {
+            logged: true,
+            user: req.user, // get the user out of session and pass to template
+            title: "Dashboard",
+            message: ""
+        });
+    });
+
+
+    app.use(db_modif.promote_admin);
+
+    app.post('/dashboard', isLoggedInAsAdmin, function (req, res) {
+        console.log("POST TO /dashboard.")
+        console.log(req.body);
+        
+        
+        db_modif.promote_admin;
+        
+        
+        res.render('dashboard.ejs', {
+            logged: true,
+            user: req.user, // get the user out of session and pass to template
+            title: "Dashboard",
+            message: req.flash('updateMessage')
+        });
+
+        // Download file test.
+        /*
+        app.get('/test', function (req, res) {
+            res.download('./README.md');
+        })*/
+
+
+
+
+
+    });
+
+    // route middleware to make sure
+    function isLoggedIn(req, res, next) {
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated())
+            return next();
+
+        // if they aren't redirect them to the home page
+        res.redirect('/');
+    }
+
+    function isLoggedInAsAdmin(req, res, next) {
+        if(req.isAuthenticated() && req.user.is_admin) {
+            return next()
+        }
+        // if they aren't redirect them to the home page
+        res.redirect('/');
+    }
 }
