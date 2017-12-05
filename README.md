@@ -1,6 +1,8 @@
 # Airport Project
 
-Creating an application to manage airport.
+Application to manage an airport.
+
+(In development).
 
 ## Features
 - authentificate users
@@ -27,5 +29,6 @@ Creating an application to manage airport.
 ## Authors
 
 By Thomas Blondelle and Thomas Duboudin
+
 Ecole Centrale de Lyon, 2017.
 
