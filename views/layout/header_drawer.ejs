@@ -1,0 +1,48 @@
+<!-- views/layout/header_drawer.ejs -->
+
+<header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+	<div class="mdl-layout__header-row">
+	    <span class="mdl-layout-title">Airport Manager</span>
+	</div>
+</header>
+    
+<div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+    <header class="demo-drawer-header">
+        <% if (!logged) { %>
+        <div class="mdl-layout-spacer"></div>
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" href="/login">Log in</a>
+        <div class="mdl-layout-spacer"></div>
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" href="/signup">Sign up</a>
+        <div class="mdl-layout-spacer"></div>
+        <% } else { %>
+        <img src="user.jpg" class="demo-avatar">
+        <div class="demo-avatar-dropdown">
+            <span><%= user.username %></span>
+            <div class="mdl-layout-spacer"></div>
+            <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                <i class="material-icons" role="presentation">arrow_drop_down</i>
+                <span class="visuallyhidden">Accounts</span>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                <li><a class="mdl-menu__item" href="/profile">My profile</a></li>
+                <li><a class="mdl-menu__item" href="/logout">Log out</a></li>
+            </ul>
+        </div>
+        <% } %>
+
+    </header>
+    <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+
+
+        <a class="mdl-navigation__link" href="/">Home</a>
+        <% if (logged) { %>
+        <a class="mdl-navigation__link" href="/travel">Travel</a>
+        <% } %>
+        <% if (logged && user.is_admin) { %>
+        <div class="mdl-layout-spacer"></div>
+        <a class="mdl-navigation__link" href="/dashboard">Dashboard</a>
+        <% } %>
+
+
+    </nav>
+</div>
