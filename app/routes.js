@@ -3,9 +3,7 @@
 
 
 module.exports = function (app, passport) {
-    var db_modif = require('../config/database_modif');
-    
-    
+    var interactions_db = require('../config/database_interactions');
     
     
     // =====================================
@@ -98,6 +96,42 @@ module.exports = function (app, passport) {
     });
 
 
+
+
+    // =====================================
+    // TRAVEL ==============================
+    // =====================================
+    // we will want this protected so you have to be logged in to visit
+    // we will use route middleware to verify this (the isLoggedIn function)  
+    app.get('/travel', isLoggedIn, function (req, res) {
+        res.render('travel.ejs', {
+            logged: true,
+            user: req.user,
+            title: "Travel",
+            message: ""
+        });
+    });
+
+    app.use(interactions_db.travel);
+
+    app.post('/travel', isLoggedInAsAdmin, function (req, res) {
+        console.log("POST TO /travel.")
+        console.log(req.body);
+               
+        interactions_db.travel;
+        
+        res.render('travel.ejs', {
+            logged: true,
+            user: req.user, // get the user out of session and pass to template
+            title: "Travel",
+            message: req.flash('updateMessage')
+        });
+    });
+
+
+
+
+
     // =====================================
     // LOGOUT ==============================
     // =====================================
@@ -120,16 +154,13 @@ module.exports = function (app, passport) {
         });
     });
 
-
-    app.use(db_modif.promote_admin);
+    app.use(interactions_db.promote_admin);
 
     app.post('/dashboard', isLoggedInAsAdmin, function (req, res) {
         console.log("POST TO /dashboard.")
         console.log(req.body);
-        
-        
-        db_modif.promote_admin;
-        
+               
+        interactions_db.promote_admin;
         
         res.render('dashboard.ejs', {
             logged: true,
@@ -137,18 +168,12 @@ module.exports = function (app, passport) {
             title: "Dashboard",
             message: req.flash('updateMessage')
         });
-
-        // Download file test.
-        /*
-        app.get('/test', function (req, res) {
-            res.download('./README.md');
-        })*/
-
-
-
-
-
     });
+
+
+    // =====================================
+    // middlewares =========================
+    // =====================================
 
     // route middleware to make sure
     function isLoggedIn(req, res, next) {

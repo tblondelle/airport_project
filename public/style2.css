@@ -1,4 +1,4 @@
-.easy-container {
+.form_container {
     max-width: 450px;
     background-color: white;
     height: 400px;
@@ -7,3 +7,6 @@
     box-shadow: 0 0 10px grey
 }
 
+.container {
+	margin: 20px;
+}

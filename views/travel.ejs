@@ -1,5 +1,6 @@
-<!-- views/dashboard.ejs -->
-<!doctype html>
+<!-- views/travel.ejs -->
+
+
 <html>
 
 <head>
@@ -72,6 +73,7 @@
 
 
 
+
         <main class="mdl-layout__content">
             <div class="page-content">
                 <!-- My content here -->
@@ -79,24 +81,29 @@
                 <div class="container">
                     <div class="col-sm-6 col-sm-offset-3">
 
-                        <h1>Administrator dashboard</h1>
+                        <h1>Travel</h1>
                             <% if (message.length > 0) { %>
                             <div class="alert alert-danger">
                                 <%= message %>
                             </div>
                             <% } %>
 
-                        <p>Promote user to admin</p>
-                        <form action="/dashboard" method="post">
+                        <p>Choose a travel</p>
+                        <form action="/travel" method="post">
                             <div class="form-group">
-                                <label>Username</label>
-                                <input type="text" class="form-control" name="username">
+                                <label>Start city</label>
+                                <input type="text" class="form-control" name="start_city">
                             </div>
-                            <button type="submit" class="btn btn-warning btn-lg">Promote</button>
+                            <div class="form-group">
+                                <label>Arrival city</label>
+                                <input type="text" class="form-control" name="arrival_city">
+                            </div>
+                            <div class="form-group">
+                                <label>Start date</label>
+                                <input type="date" class="form-control" name="start_date">
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-lg">Search</button>
                         </form>
-
-
-
 
                     </div>
                 </div>
