@@ -53,8 +53,8 @@ if sys.argv[1] == "--create":
     cursor.execute(sql3)
 
     sql4 = """ create table if not exists aircrafts_fleet (
-    aircraft_id varchar(255) not null,
-    aircraft_type varchar(255) not null,
+    aircraft_id varchar(100) not null,
+    aircraft_type varchar(100) not null,
     primary key (aircraft_id)
     );"""
 
@@ -81,10 +81,10 @@ if sys.argv[1] == "--create":
 
     sql8 = """ create table if not exists flights (
     flight_number int(11) not null auto_increment,
-    departure_time time() not null,
-    arrival_time time() not null,
-    start_day date() not null,
-    end_day date() not null,
+    departure_time time not null,
+    arrival_time time not null,
+    start_day date not null,
+    end_day date not null,
     aircraft_id int(11) not null,
     route_id int(11) not null,
     primary key (flight_number)
@@ -94,15 +94,13 @@ if sys.argv[1] == "--create":
 
     sql9 = """ create table if not exists departures (
     flight_number int(11) not null,
-    departure_datetime datetime() not null,
+    departure_datetime datetime not null,
     pilot_1 int(11) not null,
     pilot_2 int(11),
     crew_1 int(11) not null,
     crew_2 int(11) not null,
     aircraft_capacity int(11) not null,
-    taken_seats int(11) not null,
-    primary key (flight_number),
-    primary key (departure_datetime)
+    taken_seats int(11) not null
     );"""
 
     cursor.execute(sql9)
@@ -111,7 +109,7 @@ if sys.argv[1] == "--create":
     ticket_id int(11) not null auto_increment,
     price int(11) not null,
     departure_id int(11) not null,
-    client_id int(11) not null;
+    client_id int(11) not null,
     primary key (ticket_id)
     );"""
 
@@ -120,7 +118,7 @@ if sys.argv[1] == "--create":
     sql11 = """ create table if not exists passengers (
     passenger_id int(11) not null auto_increment,
     name varchar(255) not null,
-    surname varchar(255)0 not null,
+    surname varchar(255) not null,
     ticket_id int(11) not null,
     primary key (passenger_id)
     );"""
