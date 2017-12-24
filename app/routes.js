@@ -5,11 +5,13 @@
 module.exports = function (app, passport) {
     var interactions_db = require('../config/database_interactions');
     
-    
+
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function (req, res) {
+
+
         data = {}
         data.title = "Home";
         if (req.user) {
@@ -28,9 +30,15 @@ module.exports = function (app, passport) {
     // =====================================
     // show the login form
     app.get('/login', function (req, res) {
-        // render the page and pass in any flash data if it exists
+        // render the page and pass in any flash data if it exist.
+        
+        console.log("requete user")
+        console.log(req.user)
+        console.log("requete session")
+        console.log(req.session)
+
         if (req.user) {
-            res.redirect('/');
+            res.redirect('/profile');
         } else {
             res.render('login.ejs', {
                 logged: false,
@@ -44,16 +52,8 @@ module.exports = function (app, passport) {
     app.post('/login', passport.authenticate('local-login', {
             successRedirect: '/profile', // redirect to the secure profile section
             failureRedirect: '/login', // redirect back to the signup page if there is an error
-            failureFlash: true // allow flash messages
-        }),
-        function (req, res) {
-            if (req.body.remember) {
-                req.session.cookie.maxAge = 1000 * 60 * 3;
-            } else {
-                req.session.cookie.expires = false;
-            }
-            res.redirect('/');
-        });
+            failureFlash: true })
+    );
 
     // =====================================
     // SIGNUP ==============================
@@ -88,6 +88,7 @@ module.exports = function (app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)  
     app.get('/profile', isLoggedIn, function (req, res) {
+
         res.render('profile.ejs', {
             logged: true,
             user: req.user,
@@ -178,18 +179,16 @@ module.exports = function (app, passport) {
     // route middleware to make sure
     function isLoggedIn(req, res, next) {
         // if user is authenticated in the session, carry on
-        if (req.isAuthenticated())
-            return next();
+        if (req.isAuthenticated()) return next();
 
-        // if they aren't redirect them to the home page
+        // if they aren't, redirect them to the home page
         res.redirect('/');
     }
 
     function isLoggedInAsAdmin(req, res, next) {
-        if(req.isAuthenticated() && req.user.is_admin) {
-            return next()
-        }
-        // if they aren't redirect them to the home page
+        if(req.isAuthenticated() && req.user.is_admin) return next()
+
+        // if they aren't, redirect them to the home page
         res.redirect('/');
     }
 }

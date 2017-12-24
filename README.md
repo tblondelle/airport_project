@@ -19,11 +19,21 @@ Application to manage an airport.
 - Material Design templates
 
 ## Instructions
+
+### 1. Installation
 1. Clone the repository.
 2. Install NodeJS, MySQL and packages: `npm install`
 3. Create the database schema: `python scripts/db_create.py --create`
-4. Launch the server: `node server.js`
-5. Visit in your browser at: `http://localhost:8080`
+
+### 2. Running the server locally
+1. Open a Terminal and run
+``` 
+export SQL_USER=root
+export SQL_PASSWORD=root
+export SQL_DATABASE=airport
+```
+2. Launch the server: `node server.js`
+3. Visit in your browser at: `http://localhost:8080`
 
 
 ## Authors
