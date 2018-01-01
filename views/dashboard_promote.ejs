@@ -1,0 +1,45 @@
+<!-- views/dashboard_promote.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message.length > 0) { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <p>Promote user to admin</p>
+                        <form action="/dashboard" method="post">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" name="username">
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-lg">Promote</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

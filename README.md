@@ -24,6 +24,7 @@ Application to manage an airport.
 1. Clone the repository.
 2. Install NodeJS, MySQL and packages: `npm install`
 3. Create the database schema: `python scripts/db_create.py --create`
+4. Fill the database: `python scripts/db_create.py --fill`
 
 ### 2. Running the server locally
 1. Open a Terminal and run

@@ -6,7 +6,6 @@ const config = {
         password: process.env.SQL_PASSWORD
     },
 	database: process.env.SQL_DATABASE,
-    users_table: 'users'
 };
 
 

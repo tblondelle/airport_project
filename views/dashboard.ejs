@@ -18,21 +18,21 @@
                 <div class="container">
                     <div class="col-sm-6 col-sm-offset-3">
 
-                        <h1>Administrator dashboard</h1>
-                            <% if (message.length > 0) { %>
-                            <div class="alert alert-danger">
-                                <%= message %>
-                            </div>
-                            <% } %>
+                        <ul>
+                            <li><a href="dashboard/promote">Promote</a></li>
+                            <li><a href="dashboard/users">Users</a></li>
+                            <li><a href="dashboard/employees">Employees</a></li>
+                            <li><a href="dashboard/aircrafts-fleet">Aircrafts Fleet</a></li>
+                            <li><a href="dashboard/routes">routes</a></li>
+                            <li><a href="dashboard/airports">airports</a></li>
+                            <li><a href="dashboard/flights">Flights</a></li>
+                            <li><a href="dashboard/departures">departures</a></li>
+                            <li><a href="dashboard/tickets">tickets</a></li>
+                            <li><a href="dashboard/passengers">passengers</a></li>
+                        </ul>   
 
-                        <p>Promote user to admin</p>
-                        <form action="/dashboard" method="post">
-                            <div class="form-group">
-                                <label>Username</label>
-                                <input type="text" class="form-control" name="username">
-                            </div>
-                            <button type="submit" class="btn btn-warning btn-lg">Promote</button>
-                        </form>
+
+
                     </div>
                 </div>
             </div>

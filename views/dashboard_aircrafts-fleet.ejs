@@ -1,0 +1,55 @@
+<!-- views/dashboard/aircraft_fleet.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message !== "") { %>
+                            <div class="info message">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <h5>Aircraft_fleet</h5>
+
+                        <%= list_aircrafts_fleet.length %> planes.
+
+                        <table style="width:100%">
+                          <tr>
+                            <th>aircraft_id</th>
+                            <th>aircraft_type</th>
+                          </tr>
+                        <% for (var i = 0; i < list_aircrafts_fleet.length; i++) { %>
+                         <tr>
+                            <td><%= list_aircrafts_fleet[i].aircraft_id %></td>
+                            <td><%= list_aircrafts_fleet[i].aircraft_type %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

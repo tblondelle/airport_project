@@ -1,0 +1,69 @@
+<!-- views/dashboard/Departures.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message !== "") { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <h5>Departures</h5>
+
+                        <%= list_departures.length %> Departures.
+
+                        <table>
+                          <tr>
+                            <th>flight_number</th>
+                            <th>start_day</th>
+                            <th>departure_datetime</th>
+                            <th>pilot_1</th>
+                            <th>pilot_2</th>
+                            <th>crew_1</th>
+                            <th>crew_2</th>
+                            <th>aircraft_capacity</th>
+                            <th>taken_seats</th>
+                          </tr>
+                        <% for (var i = 0; i < list_departures.length; i++) { %>
+                         <tr>
+                            <td><%= list_departures[i].flight_number %></td>
+                            <td><%= list_departures[i].start_day %></td>
+                            <td><%= list_departures[i].departure_datetime %></td>
+                            <td><%= list_departures[i].pilot_1 %></td>
+                            <td><%= list_departures[i].pilot_2 %></td>
+                            <td><%= list_departures[i].crew_1 %></td>
+                            <td><%= list_departures[i].crew_2 %></td>
+                            <td><%= list_departures[i].aircraft_capacity %></td>
+                            <td><%= list_departures[i].taken_seats %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

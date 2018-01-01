@@ -1,0 +1,59 @@
+    <!-- views/dashboard/passengers.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message !== "") { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <h5>passengers</h5>
+
+                        <%= list_passengers.length %> passengers.
+
+                        <table>
+                          <tr>
+                            <th>passenger_id</th>
+                            <th>name</th>
+                            <th>surname</th>
+                            <th>ticket_id</th>
+                          </tr>
+                        <% for (var i = 0; i < list_passengers.length; i++) { %>
+                         <tr>
+                            <td><%= list_passengers[i].passenger_id %></td>
+                            <td><%= list_passengers[i].name %></td>
+                            <td><%= list_passengers[i].surname %></td>
+                            <td><%= list_passengers[i].ticket_id %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

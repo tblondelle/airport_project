@@ -1,0 +1,405 @@
+<!-- views/dashboard/employee.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+  <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+    <% include layout/header_drawer %>
+
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <!-- My content here -->
+
+        <div class="container">
+          <div class="col-sm-6 col-sm-offset-3">
+
+            <h1>Administrator dashboard</h1>
+                <% if (message != "") { %>
+                <div class="info message"><%= message %></div>
+                <% } %>
+
+            <h5>Employees</h5>
+
+
+            <h6>Ground employees</h6>
+            
+            <%= list_ground_employee.length %> ground employees.
+
+
+
+            <button id="show-add-ground-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="margin: 3px">Add a ground employee</button>
+
+
+            <button id="show-del-ground-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="margin: 3px">Delete a ground employee</button>
+
+
+            <dialog class="mdl-dialog" id="add-ground-dialog">
+              <h4 class="mdl-dialog__title">Add ground employee</h4>
+
+              <form action="/dashboard/add/ground-employee" method="post">
+                <div class="mdl-dialog__content">
+                  <div class="form-group">
+                      <label>surname</label>
+                      <input type="text" class="form-control" name="surname">
+                  </div>
+                  <div class="form-group">
+                      <label>Name</label>
+                      <input type="text" class="form-control" name="name">
+                  </div>
+                  <div class="form-group">
+                      <label>address</label>
+                      <input type="text" class="form-control" name="address">
+                  </div>
+                  <div class="form-group">
+                      <label>wage</label>
+                      <input type="number" class="form-control" name="wage">
+                  </div>
+                  <div class="form-group">
+                      <label>Post</label>
+                      <input type="text" class="form-control" name="post">
+                  </div>
+                  <div class="form-group">
+                      <label>social_security_number</label>
+                      <input type="text" class="form-control" name="social_security_number">
+                  </div>
+                </div>
+                <div class="mdl-dialog__actions">
+                  <button type="submit" class="mdl-button">Insert</button>
+                  <button type="button" class="mdl-button close">Close</button>
+                </div>
+              </form>
+            </dialog>
+
+
+
+            <dialog class="mdl-dialog" id="del-ground-dialog">
+              <h4 class="mdl-dialog__title">Delete a ground employee</h4>
+              <form action="/dashboard/del/ground-employee" method="post">
+                <div class="mdl-dialog__content">
+                  <label>ground_employees_id</label>
+                  <input type="text" class="form-control" name="ground_employees_id">
+                </div>
+                <div class="mdl-dialog__actions">
+                  <button type="submit" class="mdl-button">Delete</button>
+                  <button type="button" class="mdl-button close">Close</button>
+                </div>
+              </form>
+            </dialog>
+
+
+            <script>
+                var dialog1 = document.querySelector('#add-ground-dialog');
+                var showDialogButton1 = document.querySelector('#show-add-ground-dialog');
+                if (! dialog1.showModal) {
+                  dialogPolyfill.registerDialog(dialog1);
+                }
+                showDialogButton1.addEventListener('click', function() {
+                  dialog1.showModal();
+                });
+                dialog1.querySelector('.close').addEventListener('click', function() {
+                  dialog1.close();
+                });
+
+                var dialog2 = document.querySelector('#del-ground-dialog');
+                var showDialogButton2 = document.querySelector('#show-del-ground-dialog');
+                if (! dialog2.showModal) {
+                  dialogPolyfill.registerDialog(dialog2);
+                }
+                showDialogButton2.addEventListener('click', function() {
+                  dialog2.showModal();
+                });
+                dialog2.querySelector('.close').addEventListener('click', function() {
+                  dialog2.close();
+                });
+              </script>
+
+            <table>
+              <tr>
+                <th>ground_employees_id</th>
+                <th>surname</th>
+                <th>name</th>
+                <th>address</th>
+                <th>wage</th>
+                <th>post</th>
+                <th>social_security_number</th>
+              </tr>
+            <% for (var i = 0; i < list_ground_employee.length; i++) { %>
+             <tr>
+                <td><%= list_ground_employee[i].ground_employees_id %></td>
+                <td><%= list_ground_employee[i].surname %></td> 
+                <td><%= list_ground_employee[i].name %></td>
+                <td><%= list_ground_employee[i].address %></td>
+                <td><%= list_ground_employee[i].wage %></td>
+                <td><%= list_ground_employee[i].post %></td>
+                <td><%= list_ground_employee[i].social_security_number %></td>
+              </tr>
+            <% } %>
+            </table>
+
+
+            <h6>Cabin crew employees</h6>
+            <%= list_cabin_crew_employee.length %> cabin crew (full time).
+
+            <button id="show-add-crew-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="margin: 3px">Add a cabin crew employee</button>
+
+
+            <button id="show-del-crew-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="margin: 3px">Delete a cabin crew employee</button>
+
+
+            <dialog class="mdl-dialog" id="add-crew-dialog">
+              <h4 class="mdl-dialog__title">Add a cabin crew employee</h4>
+              <form action="/dashboard/add/cabin-crew-employee" method="post">
+                <div class="mdl-dialog__content">
+                  <div class="form-group">
+                      <label>surname</label>
+                      <input type="text" class="form-control" name="surname">
+                  </div>
+                  <div class="form-group">
+                      <label>Name</label>
+                      <input type="text" class="form-control" name="name">
+                  </div>
+                  <div class="form-group">
+                      <label>address</label>
+                      <input type="text" class="form-control" name="address">
+                  </div>
+                  <div class="form-group">
+                      <label>wage</label>
+                      <input type="number" class="form-control" name="wage">
+                  </div>
+                  <div class="form-group">
+                      <label>Post</label>
+                      <input type="text" class="form-control" name="post">
+                  </div>
+                  <div class="form-group">
+                      <label>Flight hours</label>
+                      <input type="number" class="form-control" name="flight_hours">
+                  </div>
+                  <div class="form-group">
+                      <label>social_security_number</label>
+                      <input type="text" class="form-control" name="social_security_number">
+                  </div>
+                </div>
+                <div class="mdl-dialog__actions">
+                  <button type="submit" class="mdl-button">Insert</button>
+                  <button type="button" class="mdl-button close">Close</button>
+                </div>
+              </form>
+            </dialog>
+
+
+
+            <dialog class="mdl-dialog" id="del-crew-dialog">
+              <h4 class="mdl-dialog__title">Delete a crew employee</h4>
+              <form action="/dashboard/del/cabin-crew-employee" method="post">
+                <div class="mdl-dialog__content">
+                  <label>crew_employees_id</label>
+                  <input type="text" class="form-control" name="crew_employees_id">
+                </div>
+                <div class="mdl-dialog__actions">
+                  <button type="submit" class="mdl-button">Delete</button>
+                  <button type="button" class="mdl-button close">Close</button>
+                </div>
+              </form>
+            </dialog>
+
+
+            <script>
+                var dialog3 = document.querySelector('#add-crew-dialog');
+                var showDialogButton3 = document.querySelector('#show-add-crew-dialog');
+                if (! dialog3.showModal) {
+                  dialogPolyfill.registerDialog(dialog3);
+                }
+                showDialogButton3.addEventListener('click', function() {
+                  dialog3.showModal();
+                });
+                dialog3.querySelector('.close').addEventListener('click', function() {
+                  dialog3.close();
+                });
+
+                var dialog4 = document.querySelector('#del-crew-dialog');
+                var showDialogButton4 = document.querySelector('#show-del-crew-dialog');
+                if (! dialog4.showModal) {
+                  dialogPolyfill.registerDialog(dialog4);
+                }
+                showDialogButton4.addEventListener('click', function() {
+                  dialog4.showModal();
+                });
+                dialog4.querySelector('.close').addEventListener('click', function() {
+                  dialog4.close();
+                });
+              </script>
+
+
+
+
+
+            <table>
+              <tr>
+                <th>crew_employees_id</th>
+                <th>surname</th>
+                <th>name</th>
+                <th>address</th>
+                <th>wage</th>
+                <th>post</th>
+                <th>flight_hours</th>
+                <th>social_security_number</th>
+              </tr>
+            <% for (var i = 0; i < list_cabin_crew_employee.length; i++) { %>
+             <tr>
+                <td><%= list_cabin_crew_employee[i].crew_employees_id %></td>
+                <td><%= list_cabin_crew_employee[i].surname %></td> 
+                <td><%= list_cabin_crew_employee[i].name %></td>
+                <td><%= list_cabin_crew_employee[i].address %></td>
+                <td><%= list_cabin_crew_employee[i].wage %></td>
+                <td><%= list_cabin_crew_employee[i].post %></td>
+                <td><%= list_cabin_crew_employee[i].flight_hours %></td>
+                <td><%= list_cabin_crew_employee[i].social_security_number %></td>
+              </tr>
+            <% } %>
+            </table>
+
+
+
+
+
+
+            <h6>Pilots</h6>
+            <%= list_pilots_employee.length %> pilots.
+
+            <button id="show-add-pilot-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="margin: 3px">Add a pilot employee</button>
+
+
+            <button id="show-del-pilot-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="margin: 3px">Delete a pilot employee</button>
+
+
+            <dialog class="mdl-dialog" id="add-pilot-dialog">
+              <h4 class="mdl-dialog__title">Add a pilot employee</h4>
+              <form action="/dashboard/add/pilot-employee" method="post">
+                <div class="mdl-dialog__content">
+                  <div class="form-group">
+                      <label>surname</label>
+                      <input type="text" class="form-control" name="surname">
+                  </div>
+                  <div class="form-group">
+                      <label>Name</label>
+                      <input type="text" class="form-control" name="name">
+                  </div>
+                  <div class="form-group">
+                      <label>address</label>
+                      <input type="text" class="form-control" name="address">
+                  </div>
+                  <div class="form-group">
+                      <label>wage</label>
+                      <input type="number" class="form-control" name="wage">
+                  </div>
+                  <div class="form-group">
+                      <label>Flight hours</label>
+                      <input type="number" class="form-control" name="flight_hours">
+                  </div>
+                  <div class="form-group">
+                      <label>Flight license</label>
+                      <input type="text" class="form-control" name="flight_licence">
+                  </div>
+                  <div class="form-group">
+                      <label>social_security_number</label>
+                      <input type="text" class="form-control" name="social_security_number">
+                  </div>
+                </div>
+                <div class="mdl-dialog__actions">
+                  <button type="submit" class="mdl-button">Insert</button>
+                  <button type="button" class="mdl-button close">Close</button>
+                </div>
+              </form>
+            </dialog>
+
+
+
+            <dialog class="mdl-dialog" id="del-pilot-dialog">
+              <h4 class="mdl-dialog__title">Delete a pilot employee</h4>
+              <form action="/dashboard/del/pilot-employee" method="post">
+                <div class="mdl-dialog__content">
+                  <label>pilots_employees_id</label>
+                  <input type="text" class="form-control" name="pilots_employees_id">
+                </div>
+                <div class="mdl-dialog__actions">
+                  <button type="submit" class="mdl-button">Delete</button>
+                  <button type="button" class="mdl-button close">Close</button>
+                </div>
+              </form>
+            </dialog>
+
+
+            <script>
+                var dialog5 = document.querySelector('#add-pilot-dialog');
+                var showDialogButton5 = document.querySelector('#show-add-pilot-dialog');
+                if (! dialog5.showModal) {
+                  dialogPolyfill.registerDialog(dialog5);
+                }
+                showDialogButton5.addEventListener('click', function() {
+                  dialog5.showModal();
+                });
+                dialog5.querySelector('.close').addEventListener('click', function() {
+                  dialog5.close();
+                });
+
+                var dialog6 = document.querySelector('#del-pilot-dialog');
+                var showDialogButton6 = document.querySelector('#show-del-pilot-dialog');
+                if (! dialog6.showModal) {
+                  dialogPolyfill.registerDialog(dialog6);
+                }
+                showDialogButton6.addEventListener('click', function() {
+                  dialog6.showModal();
+                });
+                dialog6.querySelector('.close').addEventListener('click', function() {
+                  dialog6.close();
+                });
+              </script>
+
+
+
+
+
+            <table>
+              <tr>
+                <th>pilots_employees_id</th>
+                <th>surname</th>
+                <th>name</th>
+                <th>address</th>
+                <th>wage</th>
+                <th>flight_hours</th>
+                <th>flight_licence</th>
+                <th>social_security_number</th>
+              </tr>
+            <% for (var i = 0; i < list_pilots_employee.length; i++) { %>
+             <tr>
+                <td><%= list_pilots_employee[i].pilots_employees_id %></td>
+                <td><%= list_pilots_employee[i].surname %></td> 
+                <td><%= list_pilots_employee[i].name %></td>
+                <td><%= list_pilots_employee[i].address %></td>
+                <td><%= list_pilots_employee[i].wage %></td>
+                <td><%= list_pilots_employee[i].flight_hours %></td>
+                <td><%= list_pilots_employee[i].flight_licence %></td>
+                <td><%= list_pilots_employee[i].social_security_number %></td>
+              </tr>
+            <% } %>
+            </table>
+
+
+           
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+</body>
+
+</html>

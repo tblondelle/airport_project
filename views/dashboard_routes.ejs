@@ -1,0 +1,57 @@
+<!-- views/dashboard/routes.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message !== "") { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <h5>routes</h5>
+
+                        <%= list_routes.length %> routes.
+
+                        <table>
+                          <tr>
+                            <th>route_id</th>
+                            <th>departure_airport_id</th>
+                            <th>arrival_airport_id</th>
+                          </tr>
+                        <% for (var i = 0; i < list_routes.length; i++) { %>
+                         <tr>
+                            <td><%= list_routes[i].route_id %></td>
+                            <td><%= list_routes[i].departure_airport_id %></td> 
+                            <td><%= list_routes[i].arrival_airport_id %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!-- views/dashboard/user.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message !== "") { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <h5>Users</h5>
+
+                        <%= list_user.length %> users.
+
+                        <table style="width:100%">
+                          <tr>
+                            <th>id</th>
+                            <th>Username</th>
+                            <th>Is admin?</th>
+                            <th>Password</th>
+                          </tr>
+                        <% for (var i = 0; i < list_user.length; i++) { %>
+                         <tr>
+                            <td><%= list_user[i].id %></td>
+                            <td><%= list_user[i].username %></td> 
+                            <td><%= list_user[i].is_admin %></td>
+                            <td><%= list_user[i].password %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

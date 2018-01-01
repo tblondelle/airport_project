@@ -1,0 +1,59 @@
+<!-- views/dashboard/airports.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>Administrator dashboard</h1>
+                            <% if (message !== "") { %>
+                            <div class="alert alert-danger">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+                        <h5>airports</h5>
+
+                        <%= list_airports.length %> airports.
+
+                        <table>
+                          <tr>
+                            <th>airport_id</th>
+                            <th>name</th>
+                            <th>code</th>
+                            <th>city</th>
+                          </tr>
+                        <% for (var i = 0; i < list_airports.length; i++) { %>
+                         <tr>
+                            <td><%= list_airports[i].airport_id %></td>
+                            <td><%= list_airports[i].name %></td> 
+                            <td><%= list_airports[i].code %></td>
+                            <td><%= list_airports[i].city %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>
