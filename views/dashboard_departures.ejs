@@ -31,21 +31,21 @@
 
                         <table>
                           <tr>
-                            <th>flight_number</th>
-                            <th>start_day</th>
-                            <th>departure_datetime</th>
-                            <th>pilot_1</th>
-                            <th>pilot_2</th>
-                            <th>crew_1</th>
-                            <th>crew_2</th>
+                            <th>departure_id</th>
+                            <th>flight_id <a href="/dashboard/flights"><i class="material-icons">add_box</i></a></th>
+                            <th>departure_date</th>
+                            <th>pilot_1 <a href="/dashboard/employees"><i class="material-icons">add_box</i></a></th>
+                            <th>pilot_2 <a href="/dashboard/employees"><i class="material-icons">add_box</i></a></th>
+                            <th>crew_1 <a href="/dashboard/employees"><i class="material-icons">add_box</i></a></th>
+                            <th>crew_2 <a href="/dashboard/employees"><i class="material-icons">add_box</i></a></th>
                             <th>aircraft_capacity</th>
                             <th>taken_seats</th>
                           </tr>
                         <% for (var i = 0; i < list_departures.length; i++) { %>
                          <tr>
-                            <td><%= list_departures[i].flight_number %></td>
-                            <td><%= list_departures[i].start_day %></td>
-                            <td><%= list_departures[i].departure_datetime %></td>
+                            <td><%= list_departures[i].departure_id %></td>
+                            <td><%= list_departures[i].flight_id %></td>
+                            <td><%= list_departures[i].departure_date %></td>
                             <td><%= list_departures[i].pilot_1 %></td>
                             <td><%= list_departures[i].pilot_2 %></td>
                             <td><%= list_departures[i].crew_1 %></td>

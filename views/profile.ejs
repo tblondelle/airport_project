@@ -24,17 +24,15 @@
                     <div class="col-sm-6">
                         <div class="well">
                             <p>
-                            <strong>id</strong>:
+                            <strong>Your ID</strong>:
                             <%= user.id %><br>
-                            <strong>username</strong>:
+                            <strong>Your username</strong>:
                             <%= user.username %><br>
-                            <strong>password</strong>:
-                            <%= user.password %><br>
-                            <strong>role</strong>:
+                            <strong>Your role</strong>:
                             <% if (user.is_admin == 0) { %>
                             User
                             <% } else { %> 
-                            Admin
+                            Administrator!
                             <% } %>
                             </p>
                         </div>

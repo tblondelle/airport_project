@@ -108,27 +108,30 @@ if sys.argv[1] == "--create":
     cursor.execute(sql6)
 
     sql8 = """ create table if not exists flights (
-    flight_number int(11) not null auto_increment,
+    flight_id int(11) not null auto_increment,
     departure_time time not null,
     arrival_time time not null,
     start_day date not null,
     end_day date not null,
     aircraft_id varchar(100) not null,
     route_id int(11) not null,
-    primary key (flight_number)
+    price int(11) not null,
+    primary key (flight_id)
     );"""
 
     cursor.execute(sql8)
 
     sql9 = """ create table if not exists departures (
-    flight_number int(11) not null,
-    departure_datetime datetime not null,
+    departure_id int(11) not null auto_increment,
+    flight_id int(11) not null,
+    departure_date date not null,
     pilot_1 int(11) not null,
     pilot_2 int(11),
     crew_1 int(11) not null,
     crew_2 int(11) not null,
     aircraft_capacity int(11) not null,
-    taken_seats int(11) not null
+    taken_seats int(11) not null,
+    primary key (departure_id)
     );"""
 
     cursor.execute(sql9)
@@ -137,7 +140,8 @@ if sys.argv[1] == "--create":
     ticket_id int(11) not null auto_increment,
     price int(11) not null,
     departure_id int(11) not null,
-    client_id int(11) not null,
+    user_id int(11) not null,
+    passenger_id int(11) not null,
     primary key (ticket_id)
     );"""
 
@@ -147,7 +151,6 @@ if sys.argv[1] == "--create":
     passenger_id int(11) not null auto_increment,
     name varchar(255) not null,
     surname varchar(255) not null,
-    ticket_id int(11) not null,
     primary key (passenger_id)
     );"""
 
@@ -213,7 +216,7 @@ if "--fill" in sys.argv:
     db.commit()
 
     insert_query5 = """ insert into routes (departure_airport_id, arrival_airport_id) values
-    (1,3),(2,3),(1,2),
+    (1,2),(1,3),(2,3),
     (1,4),(2,4),(3,4),
     (1,5),(2,5),(3,5),(4,5),
     (3,1),(3,2),(2,1),
@@ -233,42 +236,48 @@ if "--fill" in sys.argv:
     cursor.execute(insert_query6)
     db.commit()
 
-    insert_query8 = """ insert into flights (departure_time, arrival_time, start_day, end_day, aircraft_id, route_id) values
-    ('12:00:00', '14:00:00', '2018-01-01', '2018-02-01', 'F12A14', 1),
-    ('11:00:00', '15:00:00', '2018-01-01', '2018-03-01', 'F12A15', 2),
-    ('17:00:00', '19:00:00', '2018-01-01', '2018-04-01', 'F12A16', 3),
-    ('22:00:00', '01:00:00', '2018-01-01', '2018-05-01', 'G12A14', 4),
-    ('08:00:00', '15:00:00', '2018-01-01', '2018-06-01', 'G12A15', 5),
-    ('10:00:00', '21:00:00', '2018-01-01', '2018-07-01', 'A00A11', 6),
-    ('11:00:00', '15:00:00', '2018-01-01', '2018-08-01', 'CV0000', 7);"""
+    insert_query8 = """ insert into flights (departure_time, arrival_time, start_day, end_day, aircraft_id, route_id, price) values
+    ('12:00:00', '14:00:00', '2018-01-01', '2019-01-01', 'F12A14', 1, 700),
+    ('11:00:00', '15:00:00', '2018-01-01', '2019-01-01', 'F12A15', 2, 700),
+    ('17:00:00', '19:00:00', '2018-01-01', '2019-01-01', 'F12A16', 3, 700),
+    ('22:00:00', '01:00:00', '2018-01-01', '2019-01-01', 'G12A14', 4, 700),
+    ('08:00:00', '15:00:00', '2018-01-01', '2019-01-01', 'G12A15', 5, 700),
+    ('10:00:00', '21:00:00', '2018-01-01', '2019-01-01', 'A00A11', 6, 700),
+    ('11:00:00', '15:00:00', '2018-01-01', '2019-01-01', 'CV0000', 7, 700);"""
 
     cursor.execute(insert_query8)
     db.commit()
 
 
-    insert_query9 = """insert into departures (flight_number, departure_datetime, pilot_1, pilot_2, crew_1, crew_2, aircraft_capacity, taken_seats) values
-    (1,"2018-01-01 12:00:00", 1, 2, 1, 2, 700, 1),
-    (2,"2018-01-01 11:00:00", 3, 4, 3, 4, 700, 1),
-    (3,"2018-01-03 17:00:00", 4, 5, 5, 6, 700, 1);"""
+    insert_query9 = """insert into departures (flight_id, departure_date, pilot_1, pilot_2, crew_1, crew_2, aircraft_capacity, taken_seats) values
+    (1,"2018-01-01", 1, 2, 1, 2, 700, 1),
+    (1,"2018-01-08", 1, 2, 1, 2, 700, 1),
+    (1,"2018-01-15", 1, 2, 1, 2, 700, 1),
+    (2,"2018-01-01", 3, 4, 3, 4, 700, 1),
+    (2,"2018-01-08", 3, 4, 3, 4, 700, 1),
+    (2,"2018-01-15", 3, 4, 3, 4, 700, 1),
+    (3,"2018-01-01", 4, 5, 5, 6, 700, 1),
+    (3,"2018-01-08", 4, 5, 5, 6, 700, 1),
+    (3,"2018-01-15", 4, 5, 5, 6, 700, 1);"""
 
     cursor.execute(insert_query9)
     db.commit()
 
-    insert_query10 = """ insert into tickets (price, departure_id, client_id) values
-    (150,1,1),(200,1,2),(200,1,3),
-    (200,2,4),(250,2,5),
-    (300,3,6);"""
+    insert_query10 = """ insert into tickets (price, departure_id, user_id, passenger_id) values
+    (150,1,1, 1),(200,1,1, 2),(200,1,1, 3),
+    (200,2,1, 4),(250,2,1, 5),
+    (300,3,1, 6);"""
 
     cursor.execute(insert_query10)
     db.commit()
 
-    insert_query11 = """insert into passengers (name, surname, ticket_id) values
-    ("Jo", "Baz", 1),
-    ("John", "Bazaz", 2),
-    ("Johnny", "Barough", 3),
-    ("Frank", "Sinatra", 4),
-    ("Franky", "Vodoo",5),
-    ("Franco", "Francesco", 6);"""
+    insert_query11 = """insert into passengers (name, surname) values
+    ("Jo", "Baz"),
+    ("John", "Bazaz"),
+    ("Johnny", "Barough"),
+    ("Frank", "Sinatra"),
+    ("Franky", "Vodoo"),
+    ("Franco", "Francesco");"""
 
     cursor.execute(insert_query11)
     db.commit()

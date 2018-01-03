@@ -103,13 +103,13 @@ module.exports = function (app, passport) {
     // TRAVEL ==============================
     // =====================================
     // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedIn function)  
     app.get('/travel', isLoggedIn, function (req, res) {
         res.render('travel.ejs', {
             logged: true,
             user: req.user,
             title: "Travel",
-            message: ""
+            message: "",
+            data_departures: ""
         });
     });
 
@@ -118,15 +118,43 @@ module.exports = function (app, passport) {
         console.log("POST TO /travel.")
         console.log(req.body);
                
-        
+        var a  = JSON.parse(req.flash('data_departures'))
+        //console.log(a)
         res.render('travel.ejs', {
+            logged: true,
+            user: req.user, // get the user out of session and pass to template
+            title: "Travel",
+            message: req.flash('updateMessage'),
+            data_departures: a
+        });
+    });
+
+
+
+    // =====================================
+    // RESERVE =============================
+    // =====================================  
+    app.get('/reserve', isLoggedIn, function (req, res) {
+        res.render('reserve.ejs', {
+            logged: true,
+            user: req.user,
+            title: "Reserve",
+            message: ""
+        });
+    });
+
+    app.post('/reserve', isLoggedIn, interactions_db.reserve,
+        function (req, res) {
+        console.log("POST TO /reserve.")
+        console.log(req.body);
+       
+        res.render('reserve.ejs', {
             logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Travel",
             message: req.flash('updateMessage')
         });
     });
-
 
 
 
@@ -146,10 +174,10 @@ module.exports = function (app, passport) {
 
 
 
-    app.get('/dashboard', function (req, res) {
+    app.get('/dashboard', isLoggedInAsAdmin, function (req, res) {
 
         res.render('dashboard.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Dashboard",
             message: ""
@@ -187,10 +215,10 @@ module.exports = function (app, passport) {
 
 
     // Users
-    app.get('/dashboard/users', interactions_db.get_users, function (req, res) {
+    app.get('/dashboard/users', isLoggedInAsAdmin, interactions_db.get_users, function (req, res) {
 
         res.render('dashboard_users.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of users",
             message: "",
@@ -201,7 +229,7 @@ module.exports = function (app, passport) {
 
 
     // Employees
-    app.get('/dashboard/employees', 
+    app.get('/dashboard/employees', isLoggedInAsAdmin, 
         interactions_db.get_ground_employees, 
         interactions_db.get_cabin_crew_employees, 
         interactions_db.get_pilots_employees, 
@@ -209,7 +237,7 @@ module.exports = function (app, passport) {
 
 
         res.render('dashboard_employees.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of employees",
             message: req.flash('updateMessage'),
@@ -218,37 +246,37 @@ module.exports = function (app, passport) {
             list_pilots_employee: req.flash('list_pilots_employee')
         });
     });
-    app.post('/dashboard/add/ground-employee', 
+    app.post('/dashboard/add/ground-employee', isLoggedInAsAdmin, 
         interactions_db.set_ground_employees,
         function (req, res) {
             res.redirect('/dashboard/employees');
         });
 
-    app.post('/dashboard/del/ground-employee', 
+    app.post('/dashboard/del/ground-employee', isLoggedInAsAdmin, 
         interactions_db.del_ground_employees, 
         function (req, res) {
             res.redirect('/dashboard/employees');
         });
 
-    app.post('/dashboard/add/cabin-crew-employee', 
+    app.post('/dashboard/add/cabin-crew-employee', isLoggedInAsAdmin, 
         interactions_db.set_cabin_crew_employees,
         function (req, res) {
             res.redirect('/dashboard/employees');
         });
 
-    app.post('/dashboard/del/cabin-crew-employee', 
+    app.post('/dashboard/del/cabin-crew-employee', isLoggedInAsAdmin, 
         interactions_db.del_cabin_crew_employees, 
         function (req, res) {
             res.redirect('/dashboard/employees');
         });
 
-    app.post('/dashboard/add/pilot-employee', 
+    app.post('/dashboard/add/pilot-employee', isLoggedInAsAdmin, 
         interactions_db.set_pilots_employees,
         function (req, res) {
             res.redirect('/dashboard/employees');
         });
 
-    app.post('/dashboard/del/pilot-employee', 
+    app.post('/dashboard/del/pilot-employee', isLoggedInAsAdmin, 
         interactions_db.del_pilots_employees, 
         function (req, res) {
             res.redirect('/dashboard/employees');
@@ -257,11 +285,11 @@ module.exports = function (app, passport) {
 
 
     // Aircraft fleet
-    app.get('/dashboard/aircrafts-fleet', interactions_db.get_aircrafts_fleet, 
+    app.get('/dashboard/aircrafts-fleet', isLoggedInAsAdmin, interactions_db.get_aircrafts_fleet, 
         function (req, res) {
 
         res.render('dashboard_aircrafts-fleet.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of aircrafts_fleet",
             message: "",
@@ -272,11 +300,11 @@ module.exports = function (app, passport) {
 
 
     // Routes
-    app.get('/dashboard/routes', interactions_db.get_routes, 
+    app.get('/dashboard/routes', isLoggedInAsAdmin, interactions_db.get_routes, 
         function (req, res) {
 
         res.render('dashboard_routes.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of routes",
             message: "",
@@ -286,11 +314,11 @@ module.exports = function (app, passport) {
 
 
     // Airports
-    app.get('/dashboard/airports', interactions_db.get_airports, 
+    app.get('/dashboard/airports', isLoggedInAsAdmin, interactions_db.get_airports, 
         function (req, res) {
 
         res.render('dashboard_airports.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of airports",
             message: "",
@@ -301,11 +329,11 @@ module.exports = function (app, passport) {
 
 
     // departures
-    app.get('/dashboard/departures', interactions_db.get_departures, 
+    app.get('/dashboard/departures', isLoggedInAsAdmin, interactions_db.get_departures, 
         function (req, res) {
 
         res.render('dashboard_departures.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of departures",
             message: "",
@@ -315,11 +343,11 @@ module.exports = function (app, passport) {
 
 
     // tickets
-    app.get('/dashboard/tickets', interactions_db.get_tickets, 
+    app.get('/dashboard/tickets', isLoggedInAsAdmin, interactions_db.get_tickets, 
         function (req, res) {
 
         res.render('dashboard_tickets.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of tickets",
             message: "",
@@ -329,11 +357,11 @@ module.exports = function (app, passport) {
 
 
     // Airports
-    app.get('/dashboard/passengers', interactions_db.get_passengers, 
+    app.get('/dashboard/passengers', isLoggedInAsAdmin, interactions_db.get_passengers, 
         function (req, res) {
 
         res.render('dashboard_passengers.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of passengers",
             message: "",
@@ -343,18 +371,40 @@ module.exports = function (app, passport) {
 
 
     // Flights
-    app.get('/dashboard/flights', interactions_db.get_flights, 
+    app.get('/dashboard/flights', isLoggedInAsAdmin, interactions_db.get_flights, 
         function (req, res) {
 
 
         res.render('dashboard_flights.ejs', {
-            logged: false,
+            logged: true,
             user: req.user, // get the user out of session and pass to template
             title: "Overview of planned flights",
             message: "",
             list_flight: req.flash('list_flight')
         });
     });
+
+
+
+    // =====================================
+    // myreservations ======================
+    // =====================================
+    app.get('/myreservations', isLoggedIn,
+        interactions_db.getMyReservations,
+        function (req, res) {
+
+
+        res.render('myreservations.ejs', {
+            logged: true,
+            user: req.user,
+            title: "My reservations",
+            message: "",
+            list_reservations: req.flash("list_reservations")
+        });
+    });
+
+
+
 
 
 

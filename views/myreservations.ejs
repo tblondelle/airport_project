@@ -1,0 +1,87 @@
+<!-- views/myreservations.ejs -->
+
+
+<html>
+<head>
+    <% include layout/head %>
+</head>
+
+<body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+        <% include layout/header_drawer %>
+
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- My content here -->
+
+                <div class="container">
+                    <div class="col-sm-6 col-sm-offset-3">
+
+                        <h1>My reservations </h1>
+                            <% if (message.length > 0) { %>
+                            <div class="alert message">
+                                <%= message %>
+                            </div>
+                            <% } %>
+
+
+                        <% if (!list_reservations || list_reservations == "") { %>
+                        There is no reservation yet.
+                        <% } else { %>
+            
+                        I have made <%= list_reservations.length %> reservations.
+
+                        <table style="width:100%">
+                          <tr>
+                            <th>ticket_id</th>
+                            <th>price</th>
+                            <th>surname</th>
+                            <th>name</th>
+                            <th>departure_date</th>
+                            <th>departure_time</th>
+                            <th>arrival_time</th>
+                            <th>start_city</th>
+                            <th>end_city</th>
+                            <th>aircraft_type</th>
+                          </tr>
+                        <% for (var i = 0; i < list_reservations.length; i++) { %>
+
+
+                        <% var departure_date = new Date(list_reservations[i].departure_date)%>
+                        <% var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; %>
+                        <% var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; %>
+                        
+                         <tr>
+                            <td><%= list_reservations[i].ticket_id %></td>
+                            <td><%= list_reservations[i].price %> €</td>
+                            <td><%= list_reservations[i].surname %></td>
+                            <td><%= list_reservations[i].name %></td>
+                            <td><%= days[departure_date.getDay()]%> <%=departure_date.getDate()%> <%=months[departure_date.getMonth()]%> <%=departure_date.getFullYear()%> </td>
+                            <td><%= list_reservations[i].departure_time %></td>
+                            <td><%= list_reservations[i].arrival_time %></td>
+                            <td><%= list_reservations[i].start_city %></td>
+                            <td><%= list_reservations[i].end_city %></td>
+                            <td><%= list_reservations[i].aircraft_type %></td>
+                          </tr>
+                        <% } %>
+                        </table>
+
+                        <% } %> 
+
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

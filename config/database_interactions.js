@@ -214,51 +214,288 @@ var get_passengers = function (req, res, next) { // callback with email and pass
 }
 
 
+var getMyReservations = function (req, res, next) {
+    var user = req.user;
+
+    connection.query(`SELECT 
+        tickets.ticket_id,
+        tickets.price,
+        passengers.surname,
+        passengers.name,
+        departures.departure_date,
+        flights.departure_time,
+        flights.arrival_time,
+        (SELECT city FROM airports WHERE airports.airport_id = routes.departure_airport_id) AS start_city,
+        (SELECT city FROM airports WHERE airports.airport_id = routes.arrival_airport_id) AS end_city,
+        aircrafts_fleet.aircraft_type
+    FROM 
+        tickets 
+        LEFT JOIN passengers ON tickets.passenger_id = passengers.passenger_id
+        LEFT JOIN departures ON tickets.departure_id = departures.departure_id
+        LEFT JOIN flights ON flights.flight_id = departures.flight_id, 
+        routes,
+        aircrafts_fleet
+    WHERE
+        user_id = ? AND
+        flights.route_id = routes.route_id AND
+        aircrafts_fleet.aircraft_id = flights.aircraft_id;`, [user.id], function (err, rows) {
+        if (err) {
+          console.log("ERR: " + err)
+          return next()
+        } else {
+          if (rows.length == 0) {
+            console.log(rows)
+            req.flash('list_reservations', "")
+          } else {
+            console.log(rows)
+            req.flash('list_reservations', rows)
+          }
+          
+          return next()
+        }
+    });
+    
+    //SELECT airport_id, name, code, city FROM airports WHERE airport_id = arrival_airport_id
+}
+
+
+var reserve = function (req, res, next) { // callback with email and password from our form
+    var departure_id = req.body.departure_id;
+    var surname = req.body.surname;
+    var name = req.body.name;
+
+    if (!departure_id || !surname || !name){
+      req.flash('updateMessage', "Please fill all fields...");
+      next()
+    }
+
+
+    var user = req.user;
+
+    var passenger;
+
+
+
+    connection.query("SELECT passenger_id FROM passengers WHERE name = ? AND surname = ?", [name, surname], function (err, rows) {
+      if (err) console.log("ERR: " + err)
+
+      passenger = rows[0]
+      console.log("passenger: " + passenger)
+      console.log(rows)
+
+      // Creation of the passenger if needed.
+      if (!passenger) {
+        console.log("1")
+        connection.query("insert into passengers (name, surname) values (?,?)", [name, surname], function (err, rows) {
+          if (err) {
+            console.log("ERR: " + err)
+            return next()
+          }
+
+          connection.query("SELECT passenger_id FROM passengers WHERE name = ? AND surname = ?", [name, surname], function (err, rows) {
+         
+              if (err) {
+                console.log("ERR: " + err)
+                return next()
+              }
+              passenger = rows[0]
+              makeReservation()
+          })
+        })
+      } else {
+        makeReservation()
+      }
+      
+
+      function makeReservation(){
+        
+        connection.query("SELECT departure_id, price FROM departures JOIN flights WHERE departure_id = ?", [departure_id], function (err, rows) {
+          if (err) console.log("ERR: " + err)
+
+          console.log(rows)
+          var departure = rows[0] 
+
+          if (departure == undefined) {
+            req.flash('updateMessage', "There is no such departure_id: " + departure_id + ".");
+            return next()
+          } else {
+
+            connection.query("insert into tickets (price, departure_id, user_id, passenger_id) values (?,?, ?, ?)", [departure.price, departure.departure_id, user.id, passenger.passenger_id], 
+              function (err, rows) {
+                if (err) {
+                  console.log("ERR: " + err)
+                  return next()
+                }
+
+                connection.query("SELECT departure_id, price FROM tickets JOIN flights WHERE departure_id = ?", [departure_id], function (err, rows) {
+                  if (err) console.log("ERR: " + err)
+                })
+
+
+
+                connection.query("insert into passengers (name, surname, ticket) values (?,?, 8)", [departure.price, departure.departure_id, user.id], 
+                  function (err, rows) {
+                    if (err)
+                        return next()
+                    return next()
+                  })
+                
+            });
+
+            // add a taken_seats here
+            connection.query("UPDATE departures SET taken_seats = taken_seats + 1 WHERE departure_id = ? ", [departure.departure_id], 
+              function (err, rows) {
+                if (err) {
+                  console.log("ERR: " + err)
+                  return next()
+                }
+            });
+
+
+
+
+
+
+
+            req.flash('updateMessage', "Reservation done for " + surname + " " + name + "!")
+          }
+        });
+      }
+  
+      
+
+    })
+}
+
+
+
 var travel = function (req, res, next) { // callback with email and password from our form
-    var start_city = req.body.start_city; // 'Mexico'
-    var arrival_city = req.body.arrival_city; // 'Paris'
-    var start_week = req.body.start_date; // '2017-12-14'
+  var start_city = req.body.start_city; // 'Atlanta'
+  var arrival_city = req.body.arrival_city; // 'Paris'
+  var input_date = req.body.start_date; // '2017-12-14'
 
-    var airport1, 
-    	airport2,
-    	route;
+  var airport1, 
+  	airport2,
+  	route, 
+    flight,
+    departures = [];
 
-    // Choose airport 1.
-    connection.query("SELECT airport_id, name, code, city FROM airports WHERE city = ?", [start_city], function (err, rows) {
-        if (err)
-            return next()
-        //https://www.w3schools.com/nodejs/nodejs_mysql_select.asp
-        /** rows = [
-		 * { name: 'John', address: 'Highway 71'},
-  		 * { name: 'Peter', address: 'Lowstreet 4'},
-  		 * { name: 'Amy', address: 'Apple st 652'}
-  		 *   ]
-  		 **/
-        console.log(rows[0])
-        airport1 = rows[0]
-    });
-    
-    // Find airport 2.
-    connection.query("SELECT airport_id, name, code, city FROM airports WHERE city = ?", [arrival_city], function (err, rows) {
-        if (err)
-            return next()
-        console.log(rows[0])
+
+  // Choose airport 1.
+  connection.query("SELECT airport_id, name, code, city FROM airports WHERE city = ?", [start_city], function (err, rows) {
+    if (err) console.log("ERR: " + err)
+    //https://www.w3schools.com/nodejs/nodejs_mysql_select.asp
+    /** rows = [
+	   * { name: 'John', address: 'Highway 71'},
+		 * { name: 'Peter', address: 'Lowstreet 4'},
+		 * { name: 'Amy', address: 'Apple st 652'}
+		 *   ]
+		 **/
+    airport1 = rows[0] // First line of the table requested.
+
+    if (airport1 == undefined) {
+      req.flash('data_departures', "{}");
+      req.flash('updateMessage', "There is no such city: " + start_city + ".");
+      return next()
+    } else {
+      console.log('start city found');
+      // Find airport 2.
+      connection.query("SELECT airport_id, name, code, city FROM airports WHERE city = ?", [arrival_city], function (err, rows) {
+        if (err) console.log("ERR: " + err);
+
         airport2 = rows[0]
+
+        if (airport2 == undefined) {
+          req.flash('data_departures', "{}");
+          req.flash('updateMessage', "There is no such city: " + arrival_city + ".");
+          return next()
+        } else {
+          console.log('end city found');
+          // Find route from airport 1 to airport 2.
+          connection.query("SELECT route_id FROM routes WHERE departure_airport_id = ? AND arrival_airport_id = ?", [airport1.airport_id, airport2.airport_id], function (err, rows) {
+            if (err) console.log("ERR: " + err);
+            route = rows[0]
+
+            if (route == undefined) {
+              req.flash('data_departures', "{}");
+              req.flash('updateMessage', "There is no such route from " + start_city + " and " + arrival_city + ".");
+              return next()
+            } else {
+              console.log('route found: ' + route.route_id);
+
+              connection.query("SELECT * FROM flights WHERE route_id = ?", [route.route_id], function (err, rows) {
+                if (err) console.log("ERR: " + err);
+                flight = rows[0]
+
+                if (flight == undefined) {
+                  req.flash('data_departures', "{}");
+                  req.flash('updateMessage', "There is no flight from " + start_city + " to " + arrival_city + ".");
+                  return next()
+                } 
+
+                // the flight exist.
+                // Now the question is : est-ce qu'il y a une date de prévue intéressante, et est-ce qu'il y a encore de la place ?
+
+                connection.query("SELECT * FROM departures WHERE flight_id = ?", [flight.flight_id], function (err, rows) {
+                  if (err) console.log("ERR: " + err);
+
+                  var departures_temp = rows;
+                  if (departures_temp == undefined) {
+                    req.flash('data_departures', "{}");
+                    req.flash('updateMessage', "There is no departure for the flight " + flight.flight_id + " (" + start_city + " to " + arrival_city + ").");
+                    return next()
+                  } else {
+
+                    for (i in departures_temp) {
+                      var departure_temp = departures_temp[i];
+                      var start_date = new Date(departure_temp["departure_date"]);
+                      start_date.setHours(start_date.getHours()+1); // Get the time in France
+                      input_date = new Date(input_date)
+
+                      if (input_date <= start_date) { // If the dates matches
+                        if (departure_temp.taken_seats < departure_temp.aircraft_capacity){
+                          departures.push(departure_temp)
+                        }
+                      }
+
+                      
+                    }
+
+
+                    var data_departures = {}
+                    data_departures.airport1 = airport1; // attributes: airport_id, name, code, city 
+                    data_departures.airport2 = airport2; // attributes: airport_id, name, code, city 
+                    data_departures.flight = flight; // attributes: flight_id, departure_time, arrival_time, start_day, end_day, aircraft_id, route_id, price
+                    data_departures.departures = departures; // list of object attributes:  departure_id, flight_id, departure_date, pilot_1, pilot_2, crew_1, crew_2, aircraft_capacity, taken_seats
+
+                    data_departures = JSON.stringify(data_departures)
+                    //console.log(data_departures)
+                    req.flash('data_departures', data_departures);
+                    req.flash('updateMessage', "There are " + departures.length + " departures for this flight!")
+                    return next()
+                  }
+
+
+
+                })
+                
+                
+
+              });
+            }
+          });
+        }
+      });
+    }
+
+
+
     });
     
     
-    // Find route from airport 1 to airport 2.
-    connection.query("SELECT route_id FROM routes WHERE departure_airport_id = ? AND arrival_airport_id = ?", [airport1.airport_id, airport2.airport_id], function (err, rows) {
-        if (err)
-            return next()
-        console.log(rows[0])
-        route = rows[0]
-    });
 	
 
 	// Find the flight for route.
-
-
 	function parse_date(date_string){
 		var year, month, day;
 		year = date_string.substring(0, 4);
@@ -267,22 +504,9 @@ var travel = function (req, res, next) { // callback with email and password fro
 		return [year, month, day];
 	}
 
-	var possible_dates = [start_week]
-    console.log(possible_dates)
 
     
-    connection.query("SELECT flight_number, departure_time, arrival_time, start_day, end_day FROM flights WHERE route_id = ? AND ((start_day = ?) OR (start_day = ?) OR (start_day = ?) OR (start_day = ?) OR (start_day = ?) OR (start_day = ?) OR (start_day = ?))", [route.route_id].concat(possible_dates), function (err, rows) {
-        if (err)
-            return next()
-        console.log(rows[0])
-        flight = rows[0]
-    });
-    
 
-
-    req.flash('updateMessage', 'Done!')
-	return next()
-    
 }
 
 
@@ -309,6 +533,6 @@ module.exports.del_ground_employees = del_ground_employees;
 module.exports.del_cabin_crew_employees = del_cabin_crew_employees;
 module.exports.del_pilots_employees = del_pilots_employees;
 
-
-
 module.exports.travel = travel;
+module.exports.reserve = reserve;
+module.exports.getMyReservations = getMyReservations;

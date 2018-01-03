@@ -29,19 +29,22 @@
 
                         <%= list_tickets.length %> tickets.
 
+
                         <table>
                           <tr>
                             <th>ticket_id</th>
                             <th>price</th>
-                            <th>departure_id</th>
-                            <th>client_id</th>
+                            <th>departure_id <a href="/dashboard/departures"><i class="material-icons">add_box</i></a></th>
+                            <th>user_id</th>
+                            <th>passenger_id <a href="/dashboard/passengers"><i class="material-icons">add_box</i></a></th>
                           </tr>
                         <% for (var i = 0; i < list_tickets.length; i++) { %>
                          <tr>
                             <td><%= list_tickets[i].ticket_id %></td>
                             <td><%= list_tickets[i].price %></td>
                             <td><%= list_tickets[i].departure_id %></td>
-                            <td><%= list_tickets[i].client_id %></td>
+                            <td><%= list_tickets[i].user_id %></td>
+                            <td><%= list_tickets[i].passenger_id %></td>
                           </tr>
                         <% } %>
                         </table>

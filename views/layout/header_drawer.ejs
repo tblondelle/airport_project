@@ -36,11 +36,13 @@
 
         <a class="mdl-navigation__link" href="/">Home</a>
         <% if (logged) { %>
-        <a class="mdl-navigation__link" href="/travel">Travel</a>
+        <a class="mdl-navigation__link" href="/travel">Search a trip</a>
+        <a class="mdl-navigation__link" href="/reserve">Reserve</a>
+        <a class="mdl-navigation__link" href="/myreservations">My reservations</a>
         <% } %>
         <% if (logged && user.is_admin) { %>
         <div class="mdl-layout-spacer"></div>
-        <a class="mdl-navigation__link" href="/dashboard">Dashboard</a>
+        <a class="mdl-navigation__link" href="/dashboard">Dashboard for admin</a>
         <% } %>
 
 

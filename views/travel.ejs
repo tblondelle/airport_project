@@ -19,14 +19,17 @@
                 <div class="container">
                     <div class="col-sm-6 col-sm-offset-3">
 
-                        <h1>Travel</h1>
+                        <h1>Search a trip</h1>
                             <% if (message.length > 0) { %>
                             <div class="alert message">
                                 <%= message %>
                             </div>
                             <% } %>
 
-                        <p>Choose a travel</p>
+
+                        <p>Search a trip<br>
+                            (try existing ones: Paris -> Atlanta, Paris -> Shangai, Atlanta -> Shangai  
+                            with a date in ]-infty , 15/01/2017])</p>
                         <form action="/travel" method="post">
                             <div class="form-group">
                                 <label>Start city</label>
@@ -42,6 +45,74 @@
                             </div>
                             <button type="submit" class="btn btn-warning btn-lg">Search</button>
                         </form>
+
+
+                        
+                        <% if (data_departures && JSON.stringify(data_departures) !== JSON.stringify({})) { %>
+                        
+                        <%=data_departures.airport1.city%> to <%=data_departures.airport2.city%>
+
+
+                        
+                        
+
+
+                        <div class="mdl-grid">
+
+                          <% for(var i = 0; i < data_departures.departures.length; i++) { %>
+
+                     
+                          <div class="mdl-cell mdl-cell--4-col">
+                            <div class="demo-card-event mdl-card mdl-shadow--2dp">
+                              <div class="mdl-card__title mdl-card--expand">
+                                <h4><%=data_departures.airport1.city%> - <%=data_departures.airport2.city%></h4>
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                                <% var departure_date = new Date(data_departures.departures[i].departure_date)%>
+                                <% var arrival_date = new Date(data_departures.departures[i].arrival_date)%>
+                                <% var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; %>
+                                <% var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; %>
+
+                                <b>Departure: </b> 
+                                <%= days[departure_date.getDay()]%> <%=departure_date.getDate()%> <%=months[departure_date.getMonth()]%> <%=departure_date.getFullYear()%> at <%=data_departures.flight.departure_time%> <br>
+
+                                <b>Arrival: </b>
+                                <%= days[departure_date.getDay()]%> <%=departure_date.getDate()%> <%=months[departure_date.getMonth()]%> <%=departure_date.getFullYear()%> at <%=data_departures.flight.arrival_time%> <br>
+
+                                <b>Price: </b> 
+                                <%=data_departures.flight.price%> €<br>
+                                
+                                <b>Departure ID: </b> 
+                                <%=data_departures.departures[i].departure_id%>
+
+
+                                <div>
+                                </div>
+
+                              </div>
+                              <div class="mdl-card__actions mdl-card--border">
+                                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/reserve">
+                                  Take this flight
+                                </a>
+                                <div class="mdl-layout-spacer"></div>
+                              </div>
+                            </div>
+                          </div>
+
+
+                           <% } %>
+
+
+
+
+
+                        </div>
+
+                         <% } %>
+
+                   
+
+
 
                     </div>
                 </div>
