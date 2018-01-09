@@ -19,9 +19,19 @@ Application to manage an airport.
 
 ### 1. Installation
 1. Clone the repository.
-2. Install NodeJS, MySQL and packages: `npm install`
-3. Create the database schema: `python scripts/db_create.py --create`
-4. Fill the database: `python scripts/db_create.py --fill`
+2. Install NodeJS
+3. Install MySQL and a database called `airport` : 
+
+Run the following command and type the hidden password: root
+```
+mysql -uroot -p
+```
+
+```
+mysql> create database airport;
+```
+4. Install all npm packages: `npm install`
+5. Create the database schema and fill it: `python scripts/db_create.py --create --fill`
 
 ### 2. Running the server locally
 1. Open a Terminal and go to the root of this directory
@@ -32,7 +42,10 @@ export SQL_PASSWORD=root
 export SQL_DATABASE=airport
 ```
 3. Launch the server: `npm start`
-3. Visit your browser at: `http://localhost:8080`
+4. Visit your browser at: `http://localhost:8080`
+5. The first user created will be administrator. The following ones will be users.
+
+Note: if you are an admin, you have great privileges. Use these with care.
 
 
 ## Authors
