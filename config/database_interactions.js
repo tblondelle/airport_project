@@ -9,39 +9,51 @@ var connection = mysql.createConnection(dbconfig.connection);
 connection.query('USE ' + dbconfig.database);
 
 
+
+
+//Flights
+var get_flights = function (req, res, next) { // callback with email and password from our form
+    connection.query("SELECT * FROM flights", function (err, rows) {
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        req.flash('list_flight', rows)
+        return next()
+    });
+}
+
+// USERS
+var get_users = function (req, res, next) { // callback with email and password from our form
+    connection.query("SELECT * FROM users", function (err, rows) {
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        req.flash('list_user', rows)
+        return next()
+    });
+}
 var promote_admin = function (req, res, next) { // callback with email and password from our form
-    var username = req.body.username;
-    connection.query("UPDATE users SET is_admin = 1 WHERE username = ?", [username], function (err, rows) {
-        if (err)
-            return next()
+    var id = req.body.ID;
+    connection.query("UPDATE users SET is_admin = 1 WHERE id = ?", [id], function (err, rows) {
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('updateMessage', 'Done!')
         return next()
     });
 }
 
 
-var get_flights = function (req, res, next) { // callback with email and password from our form
-    connection.query("SELECT * FROM flights", function (err, rows) {
-        if (err)
-            return next()
-        req.flash('list_flight', rows)
-        return next()
-    });
-}
-
-var get_users = function (req, res, next) { // callback with email and password from our form
-    connection.query("SELECT * FROM users", function (err, rows) {
-        if (err)
-            return next()
-        req.flash('list_user', rows)
-        return next()
-    });
-}
-
+// Employees
 var get_ground_employees = function (req, res, next) {
     connection.query("SELECT * FROM ground_employees", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_ground_employee', rows)
         return next()
     });
@@ -56,30 +68,38 @@ var set_ground_employees = function (req, res, next) {
 
     connection.query(
         "INSERT INTO ground_employees (surname, name, address, wage, post, social_security_number) values (?, ?, ?, ?,?,?)", [surname, name, address, wage, post, social_security_number], function (err, rows) {
-        if (err)
-            return next()
-        req.flash('updateMessage', surname + ' ' + name +  ' correctly inserted!')
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        req.flash('message', surname + ' ' + name +  ' correctly inserted!')
         return next()
     });
 }
 var del_ground_employees = function (req, res, next) {
     var ground_employees_id = req.body.ground_employees_id;
-    console.log("oui")
 
     connection.query(
         "DELETE FROM ground_employees WHERE ground_employees_id = ?", [ground_employees_id], function (err, rows) {
-        if (err)
-            return next()
-        req.flash('updateMessage', 'Ground employee ' + ground_employees_id +  ' deleted!')
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        if (rows.affectedRows == 0) { 
+          req.flash('message', 'No such ground employee ID found...')
+        } else {
+          req.flash('message', 'Ground employee ' + ground_employees_id +  ' deleted!')
+        }
         return next()
     });
 }
 
-
 var get_cabin_crew_employees = function (req, res, next) {
     connection.query("SELECT * FROM cabin_crew_employees", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_cabin_crew_employee', rows)
         return next()
     });
@@ -96,10 +116,11 @@ var set_cabin_crew_employees = function (req, res, next) {
 
     connection.query(
         "INSERT INTO cabin_crew_employees (surname, name, address, wage, post, flight_hours, social_security_number) values (?, ?, ?, ?, ?,?,?)", [surname, name, address, wage, post, flight_hours, social_security_number], function (err, rows) {
-        if (err)
-            req.flash('updateMessage', 'ERROR!')
-            return next()
-        req.flash('updateMessage', 'Done!')
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        req.flash('message', 'Done!')
         return next()
     });
 }
@@ -108,18 +129,25 @@ var del_cabin_crew_employees = function (req, res, next) {
 
     connection.query(
         "DELETE FROM cabin_crew_employees WHERE crew_employees_id = ?", [crew_employees_id], function (err, rows) {
-        if (err)
-            return next()
-        req.flash('updateMessage', 'Cabin crew employee ' + crew_employees_id +  ' deleted!')
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        if (rows.affectedRows == 0) { 
+          req.flash('message', 'No such cabin crew employee ID found...')
+        } else {
+          req.flash('message', 'Cabin crew employee ' + crew_employees_id +  ' deleted!')
+        }
         return next()
     });
 }
 
-
 var get_pilots_employees = function (req, res, next) {
     connection.query("SELECT * FROM pilots_employees", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_pilots_employee', rows)
         return next()
     });
@@ -135,10 +163,11 @@ var set_pilots_employees = function (req, res, next) {
 
     connection.query(
         "INSERT INTO pilots_employees (surname, name, address, wage, flight_hours, flight_licence, social_security_number) values (?,?,?, ?,?,?, ?)", [surname, name, address, wage, flight_hours, flight_licence, social_security_number], function (err, rows) {
-        if (err)
-            console.log("ERROR:" + err);
-            return next()
-        req.flash('updateMessage', 'Done!')
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        req.flash('message', 'Done!')
         return next()
     });
 }
@@ -147,45 +176,56 @@ var del_pilots_employees = function (req, res, next) {
 
     connection.query(
         "DELETE FROM pilots_employees WHERE pilots_employees_id = ?", [pilots_employees_id], function (err, rows) {
-        if (err)
-            req.flash('updateMessage',  'ERROR: ' + err)
-            return next()
-        req.flash('updateMessage',  " Pilot " + pilots_employees_id + ' deleted!')
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
+        if (rows.affectedRows == 0) { 
+          req.flash('message', 'No such pilot ID found...')
+        } else {
+          req.flash('message',  " Pilot " + pilots_employees_id + ' deleted!')
+        }
         return next()
     });
 }
 
-
+//Aircrafts
 var get_aircrafts_fleet = function (req, res, next) { // callback with email and password from our form
     connection.query("SELECT * FROM aircrafts_fleet", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_aircrafts_fleet', rows)
         return next()
     });
 }
 
-
+//Routes
 var get_routes = function (req, res, next) { // callback with email and password from our form
     connection.query("SELECT * FROM routes", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_routes', rows)
         return next()
     });
 }
 
-
+// Airports
 var get_airports = function (req, res, next) { // callback with email and password from our form
     connection.query("SELECT * FROM airports", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_airports', rows)
         return next()
     });
 }
 
-
+//Departures
 var get_departures = function (req, res, next) { // callback with email and password from our form
     connection.query("SELECT * FROM departures", function (err, rows) {
         if (err)
@@ -195,25 +235,32 @@ var get_departures = function (req, res, next) { // callback with email and pass
     });
 }
 
+//Tickets
 var get_tickets = function (req, res, next) { // callback with email and password from our form
     connection.query("SELECT * FROM tickets", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_tickets', rows)
         return next()
     });
 }
 
+//Passegers
 var get_passengers = function (req, res, next) { // callback with email and password from our form
     connection.query("SELECT * FROM passengers", function (err, rows) {
-        if (err)
-            return next()
+        if (err) {
+          req.flash('updateMessage',  'ERROR: ' + err)
+          return next()
+        }
         req.flash('list_passengers', rows)
         return next()
     });
 }
 
 
+//Reservations
 var getMyReservations = function (req, res, next) {
     var user = req.user;
 
@@ -254,19 +301,17 @@ var getMyReservations = function (req, res, next) {
           return next()
         }
     });
-    
-    //SELECT airport_id, name, code, city FROM airports WHERE airport_id = arrival_airport_id
 }
 
-
-var reserve = function (req, res, next) { // callback with email and password from our form
+// Reserve
+var reserve = function (req, res, next) {
     var departure_id = req.body.departure_id;
     var surname = req.body.surname;
     var name = req.body.name;
 
     if (!departure_id || !surname || !name){
       req.flash('updateMessage', "Please fill all fields...");
-      next()
+      return next()
     }
 
 
@@ -336,7 +381,8 @@ var reserve = function (req, res, next) { // callback with email and password fr
                 connection.query("insert into passengers (name, surname, ticket) values (?,?, 8)", [departure.price, departure.departure_id, user.id], 
                   function (err, rows) {
                     if (err)
-                        return next()
+                      console.log("ERR: " + err)
+                      return next()
                     return next()
                   })
                 
@@ -368,7 +414,7 @@ var reserve = function (req, res, next) { // callback with email and password fr
 }
 
 
-
+// Travel
 var travel = function (req, res, next) { // callback with email and password from our form
   var start_city = req.body.start_city; // 'Atlanta'
   var arrival_city = req.body.arrival_city; // 'Paris'
@@ -380,10 +426,21 @@ var travel = function (req, res, next) { // callback with email and password fro
     flight,
     departures = [];
 
+  function parse_date(date_string){
+    var year, month, day;
+    year = date_string.substring(0, 4);
+    month = date_string.substring(5, 7);
+    day = date_string.substring(8, 10);
+    return [year, month, day];
+  }
+
 
   // Choose airport 1.
   connection.query("SELECT airport_id, name, code, city FROM airports WHERE city = ?", [start_city], function (err, rows) {
-    if (err) console.log("ERR: " + err)
+    if (err) {
+      console.log("ERR: " + err)
+      return next()
+    }
     //https://www.w3schools.com/nodejs/nodejs_mysql_select.asp
     /** rows = [
 	   * { name: 'John', address: 'Highway 71'},
@@ -398,10 +455,13 @@ var travel = function (req, res, next) { // callback with email and password fro
       req.flash('updateMessage', "There is no such city: " + start_city + ".");
       return next()
     } else {
-      console.log('start city found');
+      //console.log('start city found');
       // Find airport 2.
       connection.query("SELECT airport_id, name, code, city FROM airports WHERE city = ?", [arrival_city], function (err, rows) {
-        if (err) console.log("ERR: " + err);
+        if (err) {
+          console.log("ERR: " + err);
+          return next();
+        }
 
         airport2 = rows[0]
 
@@ -410,10 +470,14 @@ var travel = function (req, res, next) { // callback with email and password fro
           req.flash('updateMessage', "There is no such city: " + arrival_city + ".");
           return next()
         } else {
-          console.log('end city found');
+          //console.log('end city found');
           // Find route from airport 1 to airport 2.
           connection.query("SELECT route_id FROM routes WHERE departure_airport_id = ? AND arrival_airport_id = ?", [airport1.airport_id, airport2.airport_id], function (err, rows) {
-            if (err) console.log("ERR: " + err);
+            if (err) {
+              console.log("ERR: " + err);
+              return next();
+            }
+
             route = rows[0]
 
             if (route == undefined) {
@@ -421,117 +485,96 @@ var travel = function (req, res, next) { // callback with email and password fro
               req.flash('updateMessage', "There is no such route from " + start_city + " and " + arrival_city + ".");
               return next()
             } else {
-              console.log('route found: ' + route.route_id);
-
+              //console.log('route found: ' + route.route_id);
               connection.query("SELECT * FROM flights WHERE route_id = ?", [route.route_id], function (err, rows) {
-                if (err) console.log("ERR: " + err);
+                if (err) {
+                  console.log("ERR: " + err);
+                  return next();
+                }
+
                 flight = rows[0]
 
                 if (flight == undefined) {
                   req.flash('data_departures', "{}");
                   req.flash('updateMessage', "There is no flight from " + start_city + " to " + arrival_city + ".");
                   return next()
-                } 
+                }  else {
 
-                // the flight exist.
-                // Now the question is : est-ce qu'il y a une date de prévue intéressante, et est-ce qu'il y a encore de la place ?
+                  // the flight exist.
+                  // Now the question is : est-ce qu'il y a une date de prévue intéressante, et est-ce qu'il y a encore de la place ?
+                  connection.query("SELECT * FROM departures WHERE flight_id = ?", [flight.flight_id], function (err, rows) {
+                    if (err) {
+                      console.log("ERR: " + err);
+                      return next();
+                    }
 
-                connection.query("SELECT * FROM departures WHERE flight_id = ?", [flight.flight_id], function (err, rows) {
-                  if (err) console.log("ERR: " + err);
+                    var departures_temp = rows;
+                    if (departures_temp == undefined) {
+                      req.flash('data_departures', "{}");
+                      req.flash('updateMessage', "There is no departure for the flight " + flight.flight_id + " (" + start_city + " to " + arrival_city + ").");
+                      return next()
+                    } else {
 
-                  var departures_temp = rows;
-                  if (departures_temp == undefined) {
-                    req.flash('data_departures', "{}");
-                    req.flash('updateMessage', "There is no departure for the flight " + flight.flight_id + " (" + start_city + " to " + arrival_city + ").");
-                    return next()
-                  } else {
+                      // Add interesting departures.
+                      for (i in departures_temp) {
+                        var departure_temp = departures_temp[i];
+                        var start_date = new Date(departure_temp["departure_date"]);
+                        start_date.setHours(start_date.getHours()+1); // Get the time in France
+                        input_date = new Date(input_date)
 
-                    for (i in departures_temp) {
-                      var departure_temp = departures_temp[i];
-                      var start_date = new Date(departure_temp["departure_date"]);
-                      start_date.setHours(start_date.getHours()+1); // Get the time in France
-                      input_date = new Date(input_date)
-
-                      if (input_date <= start_date) { // If the dates matches
-                        if (departure_temp.taken_seats < departure_temp.aircraft_capacity){
-                          departures.push(departure_temp)
+                        if (input_date <= start_date) { // If the dates matches
+                          if (departure_temp.taken_seats < departure_temp.aircraft_capacity){
+                            departures.push(departure_temp)
+                          }
                         }
                       }
 
-                      
+                      var data_departures = {}
+                      data_departures.airport1 = airport1; // attributes: airport_id, name, code, city 
+                      data_departures.airport2 = airport2; // attributes: airport_id, name, code, city 
+                      data_departures.flight = flight; // attributes: flight_id, departure_time, arrival_time, start_day, end_day, aircraft_id, route_id, price
+                      data_departures.departures = departures; // list of object attributes:  departure_id, flight_id, departure_date, pilot_1, pilot_2, crew_1, crew_2, aircraft_capacity, taken_seats
+
+                      req.flash('data_departures', JSON.stringify(data_departures));
+                      req.flash('updateMessage', "There are " + departures.length + " departures for this flight!")
+                      return next()
                     }
-
-
-                    var data_departures = {}
-                    data_departures.airport1 = airport1; // attributes: airport_id, name, code, city 
-                    data_departures.airport2 = airport2; // attributes: airport_id, name, code, city 
-                    data_departures.flight = flight; // attributes: flight_id, departure_time, arrival_time, start_day, end_day, aircraft_id, route_id, price
-                    data_departures.departures = departures; // list of object attributes:  departure_id, flight_id, departure_date, pilot_1, pilot_2, crew_1, crew_2, aircraft_capacity, taken_seats
-
-                    data_departures = JSON.stringify(data_departures)
-                    //console.log(data_departures)
-                    req.flash('data_departures', data_departures);
-                    req.flash('updateMessage', "There are " + departures.length + " departures for this flight!")
-                    return next()
-                  }
-
-
-
-                })
-                
-                
-
+                  });
+                }
               });
             }
           });
         }
       });
     }
-
-
-
-    });
-    
-    
-	
-
-	// Find the flight for route.
-	function parse_date(date_string){
-		var year, month, day;
-		year = date_string.substring(0, 4);
-		month = date_string.substring(5, 7);
-		day = date_string.substring(8, 10);
-		return [year, month, day];
-	}
-
-
-    
-
+  });
 }
 
 
 
 // expose this function to our app using module.exports
-module.exports.promote_admin = promote_admin;
 module.exports.get_flights = get_flights;
+
 module.exports.get_users = get_users;
+module.exports.promote_admin = promote_admin;
+
+
 module.exports.get_ground_employees = get_ground_employees;
 module.exports.get_cabin_crew_employees = get_cabin_crew_employees;
 module.exports.get_pilots_employees = get_pilots_employees;
+module.exports.set_ground_employees = set_ground_employees;
+module.exports.set_cabin_crew_employees = set_cabin_crew_employees;
+module.exports.set_pilots_employees = set_pilots_employees;
+module.exports.del_ground_employees = del_ground_employees;
+module.exports.del_cabin_crew_employees = del_cabin_crew_employees;
+module.exports.del_pilots_employees = del_pilots_employees;
+
 module.exports.get_aircrafts_fleet = get_aircrafts_fleet;
 module.exports.get_routes = get_routes;
 module.exports.get_airports = get_airports;
 module.exports.get_departures = get_departures;
 module.exports.get_tickets = get_tickets;
 module.exports.get_passengers = get_passengers;
-
-module.exports.set_ground_employees = set_ground_employees;
-module.exports.set_cabin_crew_employees = set_cabin_crew_employees;
-module.exports.set_pilots_employees = set_pilots_employees;
-
-module.exports.del_ground_employees = del_ground_employees;
-module.exports.del_cabin_crew_employees = del_cabin_crew_employees;
-module.exports.del_pilots_employees = del_pilots_employees;
 
 module.exports.travel = travel;
 module.exports.reserve = reserve;

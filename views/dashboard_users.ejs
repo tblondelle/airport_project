@@ -46,6 +46,41 @@
                         <% } %>
                         </table>
 
+                        <br>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="show-add-admin-dialog">Promote a user to admin</button>
+
+                        <dialog class="mdl-dialog" id="add-admin-dialog">
+                          <h4 class="mdl-dialog__title">Promote user to admin</h4>
+                          <div class="mdl-dialog__content">
+                          <form action="/dashboard/users/promote" method="post">
+                            <div class="form-group">
+                                <label>User ID</label>
+                                <input type="text" class="form-control" name="ID">
+                            </div>
+                            
+                          </div>
+
+                            <div class="mdl-dialog__actions">
+                              <button type="submit" class="mdl-button">Promote</button>
+                              <button type="button" class="mdl-button close">Close</button>
+                            </div>
+                          </form>
+                        </dialog>
+
+                        <script>
+                        var dialog1 = document.querySelector('#add-admin-dialog');
+                        var showDialogButton1 = document.querySelector('#show-add-admin-dialog');
+                        if (! dialog1.showModal) {
+                          dialogPolyfill.registerDialog(dialog1);
+                        }
+                        showDialogButton1.addEventListener('click', function() {
+                          dialog1.showModal();
+                        });
+                        dialog1.querySelector('.close').addEventListener('click', function() {
+                          dialog1.close();
+                        });
+                         </script>
+
 
                     </div>
                 </div>

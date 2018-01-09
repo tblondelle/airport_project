@@ -35,6 +35,16 @@ table th {
 }
 
 
+form {
+    padding: 20px;
+}
+
+.form-group {
+    display: block;
+}
+
+
+
 .alert.message {
     border: 1px solid red;
     background-color: #ffd9d9;
