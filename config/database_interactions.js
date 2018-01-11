@@ -112,7 +112,6 @@ var set_cabin_crew_employees = function (req, res, next) {
     var post = req.body.post;
     var flight_hours = req.body.flight_hours;
     var social_security_number = req.body.social_security_number;
-    console.log(surname,name, address, wage, post, flight_hours, social_security_number)
 
     connection.query(
         "INSERT INTO cabin_crew_employees (surname, name, address, wage, post, flight_hours, social_security_number) values (?, ?, ?, ?, ?,?,?)", [surname, name, address, wage, post, flight_hours, social_security_number], function (err, rows) {
@@ -325,12 +324,9 @@ var reserve = function (req, res, next) {
       if (err) console.log("ERR: " + err)
 
       passenger = rows[0]
-      console.log("passenger: " + passenger)
-      console.log(rows)
 
       // Creation of the passenger if needed.
       if (!passenger) {
-        console.log("1")
         connection.query("insert into passengers (name, surname) values (?,?)", [name, surname], function (err, rows) {
           if (err) {
             console.log("ERR: " + err)
@@ -357,7 +353,6 @@ var reserve = function (req, res, next) {
         connection.query("SELECT departure_id, price FROM departures JOIN flights WHERE departure_id = ?", [departure_id], function (err, rows) {
           if (err) console.log("ERR: " + err)
 
-          console.log(rows)
           var departure = rows[0] 
 
           if (departure == undefined) {
